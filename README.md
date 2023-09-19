@@ -14,7 +14,7 @@ Tic-tac-toe is a two-player game played on a three-by-three grid. Players take t
 
 2. **Status Messages:** Both games must display status messages to inform the player about the current game state. These messages should indicate the next player's turn or declare the winner of the game.
 
-3. **Restart Button:** Include a restart button in both games to allow players to start a new game after finishing one.
+3. **Restart Button:** Include a restart button in both games to allow players to start a new game at any time.
 
 4. **Technologies:** You can only use HTML, CSS, and JavaScript to build the games. External libraries are not allowed.
 
