@@ -113,28 +113,28 @@
             if (player1Value.trim() === '' || player2Value.trim() === '') {
                 alert("Please enter both player names.");
             } else {
-                document.getElementById("playerInfo").style.display = "none";
-                document.getElementById("ticTacToeTable").style.display = "block";
-                game.playerX = player1Value;
-                game.playerY = player2Value;
-                game.gameInProgress = true;
-                game.winnerElement = document.getElementById('winner');
-                game.cells = document.querySelectorAll('.cell');
-                game.restartButton = document.getElementById('restart');
-                start()
-                console.log(game.board)
-                console.log(game.playerX)
-                console.log(game.playerY)
-                console.log(game.gameInProgress)
+                initializeGame(player1Value,player2Value);
             }
         });
+
+        function initializeGame(p1, p2){
+            document.getElementById("playerInfo").style.display = "none";
+            document.getElementById("ticTacToeTable").style.display = "block";
+            game.playerX = p1;
+            game.playerY = p2;
+            game.gameInProgress = true;
+            game.winnerElement = document.getElementById('winner');
+            game.cells = document.querySelectorAll('.cell');
+            game.restartButton = document.getElementById('restart');
+            start()
+        }
 
         function start(){
             game.cells.forEach((cell) => {
                 cell.addEventListener('click', (event) => {
                     const row = parseInt(cell.id[0]);
                     const col = parseInt(cell.id[1]);
-                    console.log("clickcc")
+
                     if (isMoveValid(row, col, game.board) && game.gameInProgress) {
                         cell.textContent = game.currentPlayer;
                         game.board = makeMove(row, col, game.currentPlayer, game.board);
@@ -142,7 +142,7 @@
                         //check for game over / outcome and if true, remove click handlers and display winner
                         if (isGameOver(game.board) !== false) {
                             game.gameInProgress = false;
-                            //this.removeClickHandlers();
+                            //If player with X wins ... otherwise ...
                             if (isGameOver(game.board) === 'X') {
                                 game.winnerElement.textContent = "Congratulations, " + game.playerX + " (X) wins!";
                             } else if (isGameOver(game.board) === 'O') {
@@ -152,36 +152,50 @@
                             }
                             game.winnerElement.style.display = "block";
                         } else {
-                            //switch player
+                            //Switch player
                             game.currentPlayer = game.currentPlayer === 'X' ? 'O' : 'X';
                         }
                     }
                 });
             });
+
+            //If click on restart
             game.restartButton.addEventListener('click', () => {
-                //console.log("restart");
-                //reset the board
-                document.getElementById("playerInfo").style.display = "block";
-                document.getElementById("ticTacToeTable").style.display = "none";
-                game.board = [
-                    ['', '', ''],
-                    ['', '', ''],
-                    ['', '', '']
-                ];
-                game.currentPlayer = 'X';
-                //clear cell
-                game.cells.forEach((cell) => {
-                    cell.textContent = '';
-                    cell.className = 'cell';
-                });
-                game.winnerElement.style.display = "none";
+                resetGame();
             });
+        }
+
+        function resetGame(){
+
+            //Show "lobby" and hide board
+            document.getElementById("playerInfo").style.display = "block";
+            document.getElementById("ticTacToeTable").style.display = "none";
+
+            //Reset board
+            game.board = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+
+            //Set X to start Again
+            game.currentPlayer = 'X';
+
+            //Clear cell
+            game.cells.forEach((cell) => {
+                cell.textContent = '';
+                cell.className = 'cell';
+            });
+
+            //Clear Winner notification
+            game.winnerElement.style.display = "none";
         }
 
         function isMoveValid(row, col, board) {
             return board[row][col] === '';
         }
 
+        //Return new board after move
         function makeMove(row, col, player, board) {
             //add x or o to js  board
             board[row][col] = player;
