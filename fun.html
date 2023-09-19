@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tic-Tac-Toe</title>
+    <style>
+        body {
+            background-color: bisque;
+        }
+
+        #ticTacToeTable {
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        .row {
+            border-bottom: 2px solid #000;
+        }
+
+        .cell {
+            width: 200px;
+            height: 200px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 24px;
+            font-weight: bold;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background-color: #eee;
+        }
+
+        .board {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* This ensures vertical centering */
+        }
+
+        /*X*/
+        .X {
+            width: 100px;
+            height: 100px;
+            background-image: url('https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/274c.png');
+            background-size: cover;
+        }
+
+        /*O*/
+        .O {
+            width: 100px;
+            height: 100px;
+            background-image: url('https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/000/636/269/datas/original.png');
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="playerInfo">
+        <label for="fname">Player 1:</label>
+        <input type="text" id="player1" name="player1"><br><br>
+        <label for="lname">Player 2:</label>
+        <input type="text" id="player2" name="player2"><br><br>
+        <input type="submit" value="Start Game">
+    </form>
+    <div class="board">
+        <table id="ticTacToeTable" style="display: none;">
+            <tr class="row">
+                <td class="cell" id="1"></td>
+                <td class="cell" id="2"></td>
+                <td class="cell" id="3"></td>
+            </tr>
+            <tr class="row">
+                <td class="cell" id="4"></td>
+                <td class="cell" id="5"></td>
+                <td class="cell" id="6"></td>
+            </tr>
+            <tr class="row">
+                <td class="cell X" id="7"></td>
+                <td class="cell O" id="8"></td>
+                <td class="cell" id="9"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        //PRE GAME
+        //--------------------------------------------------------
+        document.getElementById("playerInfo").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const player1Value = document.getElementById("player1").value;
+            const player2Value = document.getElementById("player2").value;
+            //check for eempty names
+            if (player1Value.trim() === '' || player2Value.trim() === '') {
+                alert("Please enter both player names.");
+            } else {
+                startGame();
+            }
+        });
+
+        function startGame() {
+            alert("game started");
+            //hide form and show board
+            document.getElementById("playerInfo").style.display = "none";
+            document.getElementById("ticTacToeTable").style.display = "block";
+        }
+        //--------------------------------------------------------
+    </script>
+</body>
+
+</html>

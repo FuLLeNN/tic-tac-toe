@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tic-Tac-Toe</title>
+    <style>
+        body {
+            background-color: bisque;
+        }
+
+        .table {
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        .row {
+            border-bottom: 2px solid #000;
+        }
+
+        .cell {
+            width: 200px;
+            height: 200px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 24px;
+            font-weight: bold;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 0;
+        }
+
+        .cell:hover {
+            background-color: #eee;
+        }
+
+        .board {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* This ensures vertical centering */
+        }
+
+        /*X*/
+        .X {
+
+            background-image: url('https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/274c.png');
+            background-size: cover;
+        }
+
+        /*O*/
+        .O {
+
+            background-image: url('https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/000/636/269/datas/original.png');
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="playerInfo">
+        <label for="fname">Player 1:</label>
+        <input type="text" id="player1" name="player1"><br><br>
+        <label for="lname">Player 2:</label>
+        <input type="text" id="player2" name="player2"><br><br>
+        <input type="submit" value="Start Game">
+    </form>
+    <div class="board" id="ticTacToeTable" style="display: none;">
+        <h3 id="winner" style="display: none;"></h3>
+        <table class="table">
+            <tr class="row">
+                <td class="cell" id="00"></td>
+                <td class="cell" id="01"></td>
+                <td class="cell" id="02"></td>
+            </tr>
+            <tr class="row">
+                <td class="cell" id="10"></td>
+                <td class="cell" id="11"></td>
+                <td class="cell" id="12"></td>
+            </tr>
+            <tr class="row">
+                <td class="cell " id="20"></td>
+                <td class="cell" id="21"></td>
+                <td class="cell" id="22"></td>
+            </tr>
+        </table>
+        <button id="restart">Restart</button>
+    </div>
+
+    <script>
+        //PRE GAME
+        //--------------------------------------------------------
+        document.getElementById("playerInfo").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const player1Value = document.getElementById("player1").value;
+            const player2Value = document.getElementById("player2").value;
+            //check for eempty names
+            if (player1Value.trim() === '' || player2Value.trim() === '') {
+                alert("Please enter both player names.");
+            } else {
+                startGame(player1Value, player2Value);
+            }
+        });
+
+        function startGame(p1, p2) {
+            new Game(p1, p2);
+            //hide form and show board
+            document.getElementById("playerInfo").style.display = "none";
+            document.getElementById("ticTacToeTable").style.display = "block";
+        }
+        //--------------------------------------------------------
+
+        class Game {
+            constructor(p1, p2) {
+                this.p1 = p1;
+                this.p2 = p2;
+                this.board = new Board();
+                this.cells = document.querySelectorAll('.cell');
+                this.restartButton = document.getElementById('restart');
+                //initialize current player as 'X'
+                this.currentPlayer = 'X';
+                this.gameInProgress = true;
+                this.winnerElement = document.getElementById('winner');
+                this.addClickHandlers();
+                this.addRestartHandler();
+            }
+
+            addClickHandlers() {
+                //this is to help remove clickHandler after game is done
+
+                this.cells.forEach((cell) => {
+                    cell.addEventListener('click', (event) => {
+                        const row = parseInt(cell.id[0]);
+                        const col = parseInt(cell.id[1]);
+
+                        if (this.board.isMoveValid(row, col) && this.gameInProgress) {
+                            cell.textContent = this.currentPlayer;
+                            this.board.makeMove(row, col, this.currentPlayer);
+
+                            //check for game over / outcome and if true, remove click handlers and display winner
+                            if (this.board.isGameOver() != false) {
+                                this.gameInProgress = false;
+                                //this.removeClickHandlers();
+                                if (this.board.isGameOver() === 'X') {
+                                    const winnerMessage = "Congratulations, " + this.p1 + " (X) wins!";
+                                    this.winnerElement.textContent = winnerMessage;
+                                } else if (this.board.isGameOver() === 'O') {
+                                    const winnerMessage = "Congratulations, " + this.p2 + " (O) wins!";
+                                    this.winnerElement.textContent = winnerMessage;
+                                } else {
+                                    const drawMessage = "It's a draw!";
+                                    this.winnerElement.textContent = drawMessage;
+                                }
+                                this.winnerElement.style.display = "block";
+                            } else {
+                                //switch player
+                                this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+                            }
+                        }
+                    });
+                });
+            }
+            addRestartHandler() {
+                this.restartButton.addEventListener('click', () => {
+                    //console.log("restart");
+                    //reset the board
+                    this.board = new Board();
+
+                    //clear cell 
+                    this.cells.forEach((cell) => {
+                        cell.textContent = '';
+                        cell.className = 'cell';
+                    });
+                    this.winnerElement.style.display = "none";
+                    //enable game
+                    this.gameInProgress = true;
+                });
+            }
+        }
+
+        class Board {
+            constructor() {
+                this.board = [
+                    ['', '', ''],
+                    ['', '', ''],
+                    ['', '', '']
+                ];
+            }
+
+            isMoveValid(row, col) {
+                if(this.board[row][col]==''){
+                    return true
+                }
+                return false;
+            }
+
+            makeMove(row, col, player) {
+                //add x or o to js  board
+                this.board[row][col] = player;
+                //add x or o to html cell
+                const cellElement = document.getElementById(`${row}${col}`);
+                cellElement.classList.add(player);
+                console.log(this.board);
+            }
+
+            //get winner if exist
+            isGameOver() {
+                const winner = this.getWinner();
+                if (winner === 'X') {
+                    return 'X';
+                } else if (winner === 'O') {
+                    return 'O';
+                } else if (this.isBoardFull()) {
+                    return 'draw';
+                }
+
+                return false;
+            }
+
+            //check if board is full
+            isBoardFull() {
+                for (let row = 0; row < 3; row++) {
+                    for (let col = 0; col < 3; col++) {
+                        if (this.board[row][col] === '') {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            //get winner by checking all outcomes and returning the symbol of tthe winner
+            getWinner() {
+                //row
+                for (let row = 0; row < 3; row++) {
+                    if (
+                        this.board[row][0] !== '' &&
+                        this.board[row][0] === this.board[row][1] &&
+                        this.board[row][1] === this.board[row][2]
+                    ) {
+                        return this.board[row][0];
+                    }
+                }
+                //column
+                for (let col = 0; col < 3; col++) {
+                    if (
+                        this.board[0][col] !== '' &&
+                        this.board[0][col] === this.board[1][col] &&
+                        this.board[1][col] === this.board[2][col]
+                    ) {
+                        return this.board[0][col];
+                    }
+                }
+                //diagonal
+                if (
+                    this.board[0][0] !== '' &&
+                    this.board[0][0] === this.board[1][1] &&
+                    this.board[1][1] === this.board[2][2]
+                ) {
+                    return this.board[0][0];
+                }
+                if (
+                    this.board[0][2] !== '' &&
+                    this.board[0][2] === this.board[1][1] &&
+                    this.board[1][1] === this.board[2][0]
+                ) {
+                    return this.board[0][2];
+                }
+                return null;
+            }
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
