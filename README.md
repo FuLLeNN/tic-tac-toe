@@ -19,3 +19,5 @@ Tic-tac-toe is a two-player game played on a three-by-three grid. Players take t
 4. **Technologies:** You can only use HTML, CSS, and JavaScript to build the games. External libraries are not allowed.
 
 5. **Styling:** There are no specific styling requirements for the games. Focus on functionality and adherence to the assignment's technical specifications.
+  
+6. **File Naming:** The files handed in should be named oo.html for the object-oriented version and fun.html for the functional programming version.
